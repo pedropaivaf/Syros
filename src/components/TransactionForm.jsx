@@ -1,16 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from '../i18n/index.jsx';
-import CategoryPicker from './CategoryPicker';
+import CategoryPicker, { dotBg } from './CategoryPicker';
 import { getCategoryById } from '../data/categories';
-import { dotBg } from './CategoryPicker';
+import { inputBase } from '../styles/shared.js';
 
 const formatDate = (date) => date.toISOString().split('T')[0];
-
-const inputBase =
-  'w-full block text-sm px-3 py-3 rounded-xl border border-[#E8E5E0] dark:border-[#2D2B28] ' +
-  'bg-white dark:bg-[#1E1D1C] text-[#1A1A1A] dark:text-[#E8E4DF] ' +
-  'placeholder:text-[#9B9B9B] dark:placeholder:text-[#6B6560] focus:outline-none focus:ring-2 ' +
-  'focus:ring-[#1B4965] focus:border-[#1B4965] transition leading-tight';
 
 const SAVED_CARDS_KEY = 'syros_saved_card_names';
 
@@ -51,6 +45,7 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
   const [paymentMethod, setPaymentMethod] = useState('pix');
   const [creditCardName, setCreditCardName] = useState('');
   const [savedCardNames, setSavedCardNames] = useState(() => getSavedCardNames());
+  const [formError, setFormError] = useState('');
 
   useEffect(() => {
     setTransactionDate(today);
@@ -81,15 +76,16 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
     const trimmedDescription = description.trim();
     if (!trimmedDescription) return;
 
+    setFormError('');
     const numericAmount = parseFloat(amount);
     if (Number.isNaN(numericAmount) || numericAmount <= 0) {
-      alert(t('form.alert.invalidAmount'));
+      setFormError(t('form.alert.invalidAmount'));
       return;
     }
 
     const selectedDate = new Date(`${transactionDate}T12:00:00`);
     if (Number.isNaN(selectedDate.getTime())) {
-      alert(t('form.alert.invalidDate'));
+      setFormError(t('form.alert.invalidDate'));
       return;
     }
 
@@ -101,15 +97,15 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
       const startDate = new Date(`${installmentStartDate}T12:00:00`);
 
       if (Number.isNaN(startDate.getTime())) {
-        alert(t('form.alert.invalidInstallmentDate'));
+        setFormError(t('form.alert.invalidInstallmentDate'));
         return;
       }
       if (!Number.isInteger(totalInstallments) || totalInstallments < 2) {
-        alert(t('form.alert.minInstallments'));
+        setFormError(t('form.alert.minInstallments'));
         return;
       }
       if (paidInstallmentsCount > totalInstallments) {
-        alert(t('form.alert.paidExceedsTotal'));
+        setFormError(t('form.alert.paidExceedsTotal'));
         return;
       }
 
@@ -475,6 +471,11 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
                 </div>
               </div>
             )}
+          </div>
+        )}
+        {formError && (
+          <div className="p-3 rounded-xl bg-red-50 dark:bg-red-900/30 text-[#9B2226] dark:text-[#E76F51] text-sm text-center">
+            {formError}
           </div>
         )}
         <button

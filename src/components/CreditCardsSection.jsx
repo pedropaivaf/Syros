@@ -13,6 +13,7 @@ import { calculateCardSummary } from '../utils/calculations';
 
 export default function CreditCardsSection({ transactions, cards, onSaveCards, selectedMonth }) {
   const [isAdding, setIsAdding] = useState(false);
+  const [cardError, setCardError] = useState('');
   const [newCard, setNewCard] = useState({
     name: '',
     brand: '',
@@ -35,9 +36,10 @@ export default function CreditCardsSection({ transactions, cards, onSaveCards, s
 
   const handleAddCard = () => {
     if (!newCard.name || !newCard.limitTotal || !newCard.closingDay || !newCard.dueDay) {
-      alert('Por favor, preencha todos os campos obrigatórios.');
+      setCardError('Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    setCardError('');
 
     const card = {
       id: Date.now().toString(),
@@ -173,9 +175,12 @@ export default function CreditCardsSection({ transactions, cards, onSaveCards, s
                 />
               </div>
             </div>
+            {cardError && (
+              <p className="text-sm text-[#9B2226] dark:text-[#E76F51]">{cardError}</p>
+            )}
             <button
               onClick={handleAddCard}
-              className="w-full bg-[#2D6A4F] hover:bg-[#245840] text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              className="w-full bg-[#2D6A4F] hover:bg-[#245840] text-white font-medium py-2 px-4 rounded-lg transition-colors min-h-[44px]"
             >
               Adicionar Cartão
             </button>

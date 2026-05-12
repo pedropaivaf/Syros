@@ -150,7 +150,7 @@ function TransactionList({ transactions, onTogglePaid, onEdit, onDelete, formatC
                     <div className={`flex items-center ${isProjection ? 'hidden' : ''} gap-1`}>
                       <button
                         type="button"
-                        className="edit-btn p-2 rounded-lg text-[#6B6B6B] hover:text-[#1B4965] dark:hover:text-[#5FA8D3] hover:bg-[#F4F3EF] dark:hover:bg-[#1A1918] transition-colors"
+                        className="edit-btn p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-[#6B6B6B] hover:text-[#1B4965] dark:hover:text-[#5FA8D3] hover:bg-[#F4F3EF] dark:hover:bg-[#1A1918] transition-colors"
                         onClick={() => onEdit(transaction)}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -159,7 +159,7 @@ function TransactionList({ transactions, onTogglePaid, onEdit, onDelete, formatC
                       </button>
                       <button
                         type="button"
-                        className="delete-btn p-2 rounded-lg text-[#6B6B6B] hover:text-[#9B2226] dark:hover:text-[#E76F51] hover:bg-[#F4F3EF] dark:hover:bg-[#1A1918] transition-colors"
+                        className="delete-btn p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-[#6B6B6B] hover:text-[#9B2226] dark:hover:text-[#E76F51] hover:bg-[#F4F3EF] dark:hover:bg-[#1A1918] transition-colors"
                         onClick={() => onDelete(transaction)}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">

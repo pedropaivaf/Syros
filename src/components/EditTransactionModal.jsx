@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from '../i18n/index.jsx';
 import CategoryPicker, { dotBg } from './CategoryPicker';
 import { getCategoryById } from '../data/categories';
+import { inputBase } from '../styles/shared.js';
+import Modal from './Modal.jsx';
 
 const formatDateInput = (value) => {
   if (!value) return '';
@@ -9,12 +11,6 @@ const formatDateInput = (value) => {
   if (Number.isNaN(date.getTime())) return '';
   return date.toISOString().split('T')[0];
 };
-
-const inputBase =
-  'w-full block text-sm px-3.5 py-3 rounded-xl border border-[#E8E5E0] dark:border-[#2D2B28] ' +
-  'bg-white dark:bg-[#1A1918] text-[#1A1A1A] dark:text-[#E8E4DF] ' +
-  'placeholder:text-[#9B9B9B] dark:placeholder:text-[#6B6560] focus:outline-none focus:ring-2 ' +
-  'focus:ring-[#1B4965] focus:border-[#1B4965] transition leading-tight';
 
 function EditTransactionModal({ isOpen, transaction, onClose, onSubmit, customCategories = [], onAddCustomCategory }) {
   const { t } = useTranslation();
@@ -25,6 +21,7 @@ function EditTransactionModal({ isOpen, transaction, onClose, onSubmit, customCa
   const [category, setCategory] = useState('');
   const [categoryPickerOpen, setCategoryPickerOpen] = useState(false);
   const [recurrence, setRecurrence] = useState('single');
+  const [formError, setFormError] = useState('');
 
   useEffect(() => {
     if (!transaction) {
@@ -49,31 +46,20 @@ function EditTransactionModal({ isOpen, transaction, onClose, onSubmit, customCa
     setRecurrence(transaction.recurrence);
   }, [transaction, isOpen]);
 
-  if (!isOpen || !transaction) {
-    return null;
-  }
-
-  const handleOverlayClick = (event) => {
-    if (event.target.id === 'edit-modal') {
-      onClose();
-    }
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const trimmedDescription = description.trim();
     const numericAmount = parseFloat(amount);
 
     if (!trimmedDescription || Number.isNaN(numericAmount) || numericAmount <= 0) {
-      alert('Por favor, preencha todos os campos corretamente.');
+      setFormError('Por favor, preencha todos os campos corretamente.');
       return;
     }
-
     if (!date) {
-      alert('Por favor, selecione uma data válida.');
+      setFormError('Por favor, selecione uma data válida.');
       return;
     }
-
+    setFormError('');
     onSubmit({
       id: transaction.id,
       description: trimmedDescription,
@@ -86,14 +72,11 @@ function EditTransactionModal({ isOpen, transaction, onClose, onSubmit, customCa
   };
 
   return (
-    <div
-      id="edit-modal"
-      role="dialog"
-      aria-modal="true"
-      className="modal-overlay fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
-      onClick={handleOverlayClick}
+    <Modal
+      isOpen={isOpen && !!transaction}
+      onClose={onClose}
+      cardClassName="modal-container animate-slide-up w-full sm:max-w-md bg-white dark:bg-[#1E1D1C] rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[92vh] overflow-y-auto"
     >
-      <div className="modal-container animate-slide-up w-full sm:max-w-md bg-white dark:bg-[#1E1D1C] rounded-t-2xl sm:rounded-2xl shadow-xl max-h-[92vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white dark:bg-[#1E1D1C] z-10 flex justify-between items-center px-6 pt-6 pb-4 border-b border-[#E8E5E0] dark:border-[#2D2B28]">
           <div>
@@ -113,6 +96,11 @@ function EditTransactionModal({ isOpen, transaction, onClose, onSubmit, customCa
 
         {/* Form */}
         <form className="px-6 py-5 space-y-5" onSubmit={handleSubmit}>
+          {formError && (
+            <div className="p-3 rounded-xl bg-red-50 dark:bg-red-900/30 text-[#9B2226] dark:text-[#E76F51] text-sm">
+              {formError}
+            </div>
+          )}
           {/* Description */}
           <div>
             <label htmlFor="edit-description" className="text-sm font-medium text-[#6B6B6B] dark:text-[#A09A92] mb-1.5 block">
@@ -284,8 +272,7 @@ function EditTransactionModal({ isOpen, transaction, onClose, onSubmit, customCa
           customCategories={customCategories}
           onAddCustomCategory={onAddCustomCategory}
         />
-      </div>
-    </div>
+    </Modal>
   );
 }
 

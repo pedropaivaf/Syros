@@ -54,7 +54,7 @@ function FilterBar({ currentFilter, onChange, dateRange, onDateRangeChange, sele
         <button
           type="button"
           onClick={handleMonthClick}
-          className={`filter-btn flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition ${
+          className={`filter-btn flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] text-sm font-medium rounded-lg transition ${
             isMonthActive
               ? 'bg-[#1B4965] dark:bg-[#5FA8D3] text-white shadow-sm'
               : 'bg-[#F4F3EF] dark:bg-[#1A1918] text-[#6B6B6B] dark:text-[#A09A92] hover:bg-[#E8E5E0] dark:hover:bg-[#2D2B28]'
@@ -68,7 +68,7 @@ function FilterBar({ currentFilter, onChange, dateRange, onDateRangeChange, sele
         <button
           type="button"
           onClick={handleCycleClick}
-          className={`filter-btn px-3 py-1.5 text-sm font-medium rounded-lg transition ${
+          className={`filter-btn px-3 py-1.5 min-h-[44px] text-sm font-medium rounded-lg transition ${
             isCycleActive
               ? 'bg-[#1B4965] dark:bg-[#5FA8D3] text-white shadow-sm'
               : 'bg-[#F4F3EF] dark:bg-[#1A1918] text-[#6B6B6B] dark:text-[#A09A92] hover:bg-[#E8E5E0] dark:hover:bg-[#2D2B28]'
