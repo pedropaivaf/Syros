@@ -34,6 +34,7 @@ import OverviewRecentTransactions from './components/OverviewRecentTransactions.
 import LoginPage from './components/LoginPage.jsx';
 import RegisterPage from './components/RegisterPage.jsx';
 import ForgotPasswordPage from './components/ForgotPasswordPage.jsx';
+import ResetPasswordPage from './components/ResetPasswordPage.jsx';
 import DesktopSidebar from './components/DesktopSidebar.jsx';
 
 // i18n
@@ -1119,7 +1120,7 @@ function AppContent() {
 
 function App() {
   const { t } = useTranslation();
-  const { user, loading, signIn, signUp, signOut, resetPassword, updatePassword } = useAuth();
+  const { user, loading, isPasswordRecovery, setIsPasswordRecovery, signIn, signUp, signOut, resetPassword, updatePassword } = useAuth();
   const [authPage, setAuthPage] = useState('login');
 
   if (loading) {
@@ -1130,6 +1131,15 @@ function App() {
           <p className="text-sm text-[#9B9B9B] dark:text-[#6B6560]">{t('app.loading') || 'Carregando...'}</p>
         </div>
       </div>
+    );
+  }
+
+  if (isPasswordRecovery) {
+    return (
+      <ResetPasswordPage
+        onUpdatePassword={updatePassword}
+        onDone={() => setIsPasswordRecovery(false)}
+      />
     );
   }
 

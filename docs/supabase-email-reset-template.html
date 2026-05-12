@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redefinir senha — Syros</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F4F3EF;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F4F3EF;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;">
+
+          <!-- Logo / Header -->
+          <tr>
+            <td align="center" style="padding-bottom:32px;">
+              <table cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="background-color:#1B4965;border-radius:16px;padding:14px 20px;" align="center">
+                    <!-- S wordmark -->
+                    <span style="font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">Syros</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Card -->
+          <tr>
+            <td style="background-color:#ffffff;border-radius:20px;box-shadow:0 2px 16px rgba(0,0,0,0.06);overflow:hidden;">
+
+              <!-- Top accent bar -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="background-color:#1B4965;height:4px;"></td>
+                </tr>
+              </table>
+
+              <!-- Body -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 36px;">
+
+                <!-- Icon -->
+                <tr>
+                  <td align="center" style="padding-bottom:24px;">
+                    <div style="width:56px;height:56px;background-color:#E8F0F4;border-radius:50%;display:inline-block;text-align:center;line-height:56px;">
+                      <span style="font-size:26px;">🔐</span>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Title -->
+                <tr>
+                  <td align="center" style="padding-bottom:12px;">
+                    <h1 style="margin:0;font-size:22px;font-weight:700;color:#1A1A1A;letter-spacing:-0.3px;">Redefinir sua senha</h1>
+                  </td>
+                </tr>
+
+                <!-- Subtitle -->
+                <tr>
+                  <td align="center" style="padding-bottom:32px;">
+                    <p style="margin:0;font-size:15px;color:#6B6B6B;line-height:1.6;max-width:340px;">
+                      Recebemos um pedido de redefinição de senha para a sua conta no Syros. Clique no botão abaixo para criar uma nova senha.
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- CTA Button -->
+                <tr>
+                  <td align="center" style="padding-bottom:32px;">
+                    <a href="{{ .ConfirmationURL }}"
+                       style="display:inline-block;background-color:#1B4965;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;padding:14px 36px;border-radius:12px;letter-spacing:0.1px;">
+                      Redefinir minha senha
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- Divider -->
+                <tr>
+                  <td style="border-top:1px solid #E8E5E0;padding-top:28px;padding-bottom:20px;">
+                    <p style="margin:0;font-size:13px;color:#9B9B9B;line-height:1.6;text-align:center;">
+                      Este link expira em <strong style="color:#6B6B6B;">1 hora</strong>.<br/>
+                      Se você não solicitou isso, pode ignorar este email com segurança.
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Fallback link -->
+                <tr>
+                  <td style="padding-bottom:8px;">
+                    <p style="margin:0;font-size:12px;color:#9B9B9B;text-align:center;">
+                      Se o botão não funcionar, copie e cole este link no navegador:
+                    </p>
+                    <p style="margin:6px 0 0;font-size:11px;color:#1B4965;text-align:center;word-break:break-all;">
+                      {{ .ConfirmationURL }}
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding-top:28px;">
+              <p style="margin:0;font-size:12px;color:#9B9B9B;">
+                © 2025 Syros · Suas finanças, simples assim.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
