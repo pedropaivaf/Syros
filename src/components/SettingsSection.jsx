@@ -117,7 +117,7 @@ function Toggle({ checked, onChange }) {
 
 // ── Main component ─────────────────────────────────────────────────────────
 
-export default function SettingsSection({ isDarkMode, onToggleTheme, transactions = [], onClearAll, onImportTransactions, userEmail, onSignOut, billingCycleDay = 1, onBillingCycleDayChange, defaultPeriodFilter = 'month', onDefaultPeriodFilterChange, cards, onSaveCards }) {
+export default function SettingsSection({ isDarkMode, onToggleTheme, transactions = [], onClearAll, onImportTransactions, userEmail, onSignOut, billingCycleDay = 1, onBillingCycleDayChange, defaultPeriodFilter = 'month', onDefaultPeriodFilterChange, cards, onSaveCards, selectedMonth }) {
   const { t, lang } = useTranslation();
   const [isExporting, setIsExporting] = useState(false);
   const [showLangPicker, setShowLangPicker] = useState(false);
@@ -532,6 +532,7 @@ export default function SettingsSection({ isDarkMode, onToggleTheme, transaction
           transactions={transactions}
           cards={cards}
           onSaveCards={onSaveCards}
+          selectedMonth={selectedMonth}
         />
         <ExportSection />
       </div>

@@ -134,10 +134,10 @@ export function getUpcomingBills(transactions, days = 30) {
  * @param {Object} card - Objeto do cartão
  * @returns {Object} Resumo do cartão
  */
-export function calculateCardSummary(transactions, card) {
+export function calculateCardSummary(transactions, card, selectedMonth, selectedYear) {
   const today = new Date();
-  const currentMonth = today.getMonth();
-  const currentYear = today.getFullYear();
+  const refMonth = selectedMonth != null ? selectedMonth : today.getMonth();
+  const refYear = selectedYear != null ? selectedYear : today.getFullYear();
 
   // Transações deste cartão (pagas ou não — todas contam na fatura)
   const cardTransactions = transactions.filter(t =>
@@ -149,7 +149,7 @@ export function calculateCardSummary(transactions, card) {
   const currentMonthTotal = cardTransactions
     .filter(t => {
       const tDate = new Date(t.createdAt);
-      return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
+      return tDate.getMonth() === refMonth && tDate.getFullYear() === refYear;
     })
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 

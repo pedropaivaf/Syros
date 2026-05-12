@@ -63,7 +63,7 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
   const resetForm = () => {
     setDescription('');
     setAmount('');
-    setType('income');
+    setType('expense');
     setCategory('');
     setRecurrence('single');
     setInstallments('');
@@ -113,7 +113,7 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
         return;
       }
 
-      const installmentAmount = -Math.abs(numericAmount) / totalInstallments;
+      const installmentAmount = -Math.abs(numericAmount);
       const groupId = Date.now().toString();
 
       for (let index = 0; index < totalInstallments; index += 1) {
@@ -225,7 +225,7 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="amount" className="text-sm font-medium text-[#6B6B6B] dark:text-[#A09A92] mb-1 block">
-              {t('form.amount.label')}
+              {isInstallment ? 'Valor da parcela' : t('form.amount.label')}
             </label>
             <input
               id="amount"
@@ -238,9 +238,15 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
               required
               aria-describedby="amount-helper"
             />
-            <p id="amount-helper" className="mt-1 text-xs text-[#6B6B6B] dark:text-[#A09A92]">
-              {t('form.amount.helper')}
-            </p>
+            {isInstallment && amount && installments && parseInt(installments, 10) >= 2 ? (
+              <p id="amount-helper" className="mt-1 text-xs text-[#1B4965] dark:text-[#5FA8D3] font-medium">
+                Total: R$ {(parseFloat(amount) * parseInt(installments, 10)).toFixed(2).replace('.', ',')}
+              </p>
+            ) : (
+              <p id="amount-helper" className="mt-1 text-xs text-[#6B6B6B] dark:text-[#A09A92]">
+                {t('form.amount.helper')}
+              </p>
+            )}
           </div>
           <div>
             <label htmlFor="transaction-date" className="text-sm font-medium text-[#6B6B6B] dark:text-[#A09A92] mb-1 block">
@@ -347,9 +353,10 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
               className={inputBase}
             >
               <option value="pix">Pix</option>
-              <option value="debit">{t('list.paymentMethods.debit') || 'Debito'}</option>
+              <option value="debit">{t('list.paymentMethods.debit') || 'Débito'}</option>
               <option value="credit">{t('list.paymentMethods.credit') || 'Crédito'}</option>
               <option value="cash">{t('list.paymentMethods.cash') || 'Dinheiro'}</option>
+              <option value="boleto">Boleto</option>
             </select>
           </div>
         )}
@@ -413,6 +420,7 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
                 { id: 'debit', label: t('list.paymentMethods.debit') },
                 { id: 'credit', label: t('list.paymentMethods.credit') },
                 { id: 'cash', label: t('list.paymentMethods.cash') },
+                { id: 'boleto', label: 'Boleto' },
               ].map((m) => (
                 <button
                   key={m.id}
