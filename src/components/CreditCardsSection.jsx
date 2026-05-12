@@ -11,7 +11,7 @@ import PremiumCard from './PremiumCard';
 import { hasFeature } from '../config';
 import { calculateCardSummary } from '../utils/calculations';
 
-export default function CreditCardsSection({ transactions, cards, onSaveCards }) {
+export default function CreditCardsSection({ transactions, cards, onSaveCards, selectedMonth }) {
   const [isAdding, setIsAdding] = useState(false);
   const [newCard, setNewCard] = useState({
     name: '',
@@ -23,13 +23,15 @@ export default function CreditCardsSection({ transactions, cards, onSaveCards })
 
   const isPremium = hasFeature('credit_cards');
 
-  // Calcula summary de cada cartão
+  // Calcula summary de cada cartão usando o mês selecionado
   const cardsWithSummary = useMemo(() => {
+    const month = selectedMonth?.month;
+    const year = selectedMonth?.year;
     return cards.map(card => {
-      const summary = calculateCardSummary(transactions, card);
+      const summary = calculateCardSummary(transactions, card, month, year);
       return { ...card, ...summary };
     });
-  }, [cards, transactions]);
+  }, [cards, transactions, selectedMonth]);
 
   const handleAddCard = () => {
     if (!newCard.name || !newCard.limitTotal || !newCard.closingDay || !newCard.dueDay) {

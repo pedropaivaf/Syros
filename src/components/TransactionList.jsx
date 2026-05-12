@@ -110,11 +110,6 @@ function TransactionList({ transactions, onTogglePaid, onEdit, onDelete, formatC
                             {t('list.badge.recurring')}
                           </span>
                         )}
-                        {isProjection && (
-                          <span className="text-xs flex-shrink-0 font-medium bg-[#F4F3EF] text-[#6B6B6B] dark:bg-[#2D2B28] dark:text-[#A09A92] px-2 py-0.5 rounded-full">
-                            {t('list.badge.projection')}
-                          </span>
-                        )}
                       </p>
                       <p className="text-sm text-[#6B6B6B] dark:text-[#A09A92]">
                         {new Date(transaction.createdAt).toLocaleDateString(lang === 'pt-BR' ? 'pt-BR' : lang)}
