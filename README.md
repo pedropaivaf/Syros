@@ -22,11 +22,14 @@ Aplicativo de finanças pessoais mobile-first, construído como PWA para experi�
 - Dashboard com resumo financeiro, gráficos e metas
 - Filtro por mês (com seletor de mês) ou período personalizado
 - Transações recorrentes com projeções automáticas
-- Métodos de pagamento (Pix, Débito, Crédito, Dinheiro)
+- Parcelas com valor individual e total calculado
+- Métodos de pagamento (Pix, Débito, Crédito, Dinheiro, Boleto)
 - Tema claro/escuro
 - Multilíngue (PT-BR, EN, ES, FR)
-- Exportação de dados (CSV)
+- Exportação de dados (CSV/JSON)
 - Modelo freemium com recursos premium (envelopes, insights, cartões de crédito)
+- Autenticação via Supabase
+- Apps nativos iOS/Android via Capacitor
 
 ## Como rodar
 

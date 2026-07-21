@@ -368,27 +368,6 @@ export default function SettingsSection({ isDarkMode, onToggleTheme, transaction
             </select>
           }
         />
-        <SettingsRow
-          icon={
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#1B4965] dark:text-[#5FA8D3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h10M4 18h6" />
-            </svg>
-          }
-          iconBg="bg-[#E8F0F4] dark:bg-[#1B2B35]"
-          label={t('settings.defaultPeriod.label')}
-          sublabel={t('settings.defaultPeriod.desc')}
-          chevron={false}
-          right={
-            <select
-              value={defaultPeriodFilter}
-              onChange={(e) => onDefaultPeriodFilterChange(e.target.value)}
-              className="text-sm bg-[#F4F3EF] dark:bg-[#1A1918] text-[#1A1A1A] dark:text-[#E8E4DF] rounded-lg px-3 py-1.5 border-0 focus:ring-2 focus:ring-[#1B4965]"
-            >
-              <option value="month">{t('settings.defaultPeriod.month')}</option>
-              <option value="cycle">{t('settings.defaultPeriod.cycle')}</option>
-            </select>
-          }
-        />
       </SettingsGroup>
 
       {/* Integracoes */}

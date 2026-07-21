@@ -88,11 +88,6 @@ export default function UpcomingBillsSection({ transactions }) {
                       <h3 className="font-semibold text-sm">
                         {bill.description}
                       </h3>
-                      {bill.isProjection && (
-                        <span className="text-xs bg-[#F4F3EF] dark:bg-[#2D2B28] px-2 py-0.5 rounded-full">
-                          Projeção
-                        </span>
-                      )}
                     </div>
                     <p className="text-xs opacity-75">
                       Vence: {formatDate(bill.createdAt)}

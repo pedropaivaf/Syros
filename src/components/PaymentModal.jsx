@@ -99,6 +99,12 @@ function PaymentModal({ isOpen, onClose, onConfirm, cards = [] }) {
               Dinheiro
             </label>
           </div>
+          <div className="custom-radio">
+            <input id="payment-boleto" type="radio" name="payment-method" value="boleto" className="sr-only" checked={paymentMethod === 'boleto'} onChange={() => setPaymentMethod('boleto')} />
+            <label htmlFor="payment-boleto" className="w-full flex items-center gap-3 px-4 py-3 border-2 border-[#E8E5E0] dark:border-[#2D2B28] rounded-xl cursor-pointer font-medium text-sm text-[#1A1A1A] dark:text-[#E8E4DF] hover:bg-[#F4F3EF] dark:hover:bg-[#1A1918] transition duration-200 min-h-[44px]">
+              Boleto
+            </label>
+          </div>
         </div>
         <div className="pt-2 pb-2">
           <button

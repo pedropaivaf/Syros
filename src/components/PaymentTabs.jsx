@@ -6,6 +6,7 @@ const tabs = [
   { value: 'debit', label: 'Débito' },
   { value: 'credit', label: 'Crédito' },
   { value: 'cash', label: 'Dinheiro' },
+  { value: 'boleto', label: 'Boleto' },
 ];
 
 function PaymentTabs({ currentPaymentFilter, onChange }) {
@@ -16,9 +17,6 @@ function PaymentTabs({ currentPaymentFilter, onChange }) {
 
   return (
     <div id="payment-tabs-container" className="border-b border-[#E8E5E0] dark:border-[#2D2B28] pb-2">
-      <p className="text-sm text-[#6B6B6B] dark:text-[#A09A92] mb-2">
-        Explore os lançamentos por tipo de pagamento
-      </p>
       <nav className="-mb-px flex gap-4 text-sm font-medium overflow-x-auto" aria-label="Filtro por método de pagamento">
         {tabs.map((tab) => (
           <button

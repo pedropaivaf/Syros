@@ -1,18 +1,20 @@
 /**
- * SmartFinance - Cálculos e Business Logic
+ * Syros - Cálculos e Business Logic
  *
  * Funções utilitárias para cálculos financeiros,
  * agregações e análises.
  */
 
 /**
- * Calcula totais de transações
+ * Calcula totais de transações.
+ * Projeções (isProjection) são EXCLUÍDAS da renda e despesa paga.
+ * totalExpense inclui projeções (para mostrar custo total esperado do mês).
  * @param {Array} transactions - Lista de transações
  * @returns {Object} Totais calculados
  */
 export function calculateTotals(transactions) {
   const income = transactions
-    .filter(t => t.type === 'income')
+    .filter(t => t.type === 'income' && !t.isProjection)
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
   const totalExpense = transactions
@@ -20,12 +22,16 @@ export function calculateTotals(transactions) {
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
   const paidExpense = transactions
-    .filter(t => t.type === 'expense' && t.paid)
+    .filter(t => t.type === 'expense' && t.paid && !t.isProjection)
+    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+  const unpaidExpense = transactions
+    .filter(t => t.type === 'expense' && !t.paid)
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
   const balance = income - paidExpense;
 
-  return { income, totalExpense, paidExpense, balance };
+  return { income, totalExpense, paidExpense, unpaidExpense, balance };
 }
 
 /**
@@ -72,7 +78,7 @@ export function groupTransactionsByMonth(transactions) {
 }
 
 /**
- * Calcula gasto por categoria
+ * Calcula gasto por categoria (exclui projeções)
  * @param {Array} transactions - Lista de transações
  * @param {string} category - Nome da categoria (opcional)
  * @returns {Object} Gastos por categoria
@@ -81,7 +87,7 @@ export function calculateExpensesByCategory(transactions) {
   const categories = {};
 
   transactions
-    .filter(t => t.type === 'expense')
+    .filter(t => t.type === 'expense' && !t.isProjection)
     .forEach(t => {
       const cat = t.category || 'Sem categoria';
       if (!categories[cat]) {
@@ -116,20 +122,24 @@ export function getTopCategories(transactions, limit = 5) {
  */
 export function getUpcomingBills(transactions, days = 30) {
   const today = new Date();
-  const futureDate = new Date();
+  today.setHours(0, 0, 0, 0);
+  const futureDate = new Date(today);
   futureDate.setDate(today.getDate() + days);
 
   return transactions
     .filter(t => {
       if (t.paid) return false;
+      if (t.type === 'income') return false;
       const tDate = new Date(t.createdAt);
+      if (Number.isNaN(tDate.getTime())) return false;
+      tDate.setHours(0, 0, 0, 0);
       return tDate >= today && tDate <= futureDate;
     })
     .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 }
 
 /**
- * Calcula resumo de cartão de crédito
+ * Calcula resumo de cartão de crédito (exclui projeções)
  * @param {Array} transactions - Lista de transações
  * @param {Object} card - Objeto do cartão
  * @returns {Object} Resumo do cartão
@@ -143,7 +153,8 @@ export function calculateCardSummary(transactions, card, selectedMonth, selected
   const cardTransactions = transactions.filter(t =>
     t.type === 'expense' &&
     t.paymentMethod === 'credit' &&
-    t.creditCardName === card.name
+    t.creditCardName === card.name &&
+    !t.isProjection
   );
 
   const currentMonthTotal = cardTransactions
@@ -169,23 +180,26 @@ export function calculateCardSummary(transactions, card, selectedMonth, selected
  * @param {Object} envelope - Objeto do envelope
  * @returns {Object} Status do envelope
  */
-export function calculateEnvelopeStatus(transactions, envelope) {
+export function calculateEnvelopeStatus(transactions, envelope, refMonth, refYear) {
   const today = new Date();
-  const currentMonth = today.getMonth();
-  const currentYear = today.getFullYear();
+  const currentMonth = refMonth != null ? refMonth : today.getMonth();
+  const currentYear = refYear != null ? refYear : today.getFullYear();
 
   const spent = transactions
-    .filter(t =>
-      t.type === 'expense' &&
-      t.category === envelope.category &&
-      !t.isProjection &&
-      new Date(t.createdAt).getMonth() === currentMonth &&
-      new Date(t.createdAt).getFullYear() === currentYear
-    )
+    .filter(t => {
+      if (t.type !== 'expense') return false;
+      if (t.category !== envelope.category) return false;
+      if (t.isProjection) return false;
+      const d = new Date(t.createdAt);
+      if (Number.isNaN(d.getTime())) return false;
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    })
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
   const remaining = Math.max(envelope.monthlyLimit - spent, 0);
-  const percent = Math.min((spent / envelope.monthlyLimit) * 100, 100);
+  const percent = envelope.monthlyLimit > 0
+    ? Math.min((spent / envelope.monthlyLimit) * 100, 150)
+    : 0;
 
   let status = 'ok';
   if (percent >= 100) status = 'exceeded';
@@ -196,25 +210,29 @@ export function calculateEnvelopeStatus(transactions, envelope) {
 }
 
 /**
- * Compara mês atual vs anterior
+ * Compara mês selecionado vs anterior (exclui projeções)
  * @param {Array} transactions - Lista de transações
  * @returns {Object} Comparação
  */
-export function compareCurrentVsPreviousMonth(transactions) {
+export function compareCurrentVsPreviousMonth(transactions, refMonth, refYear) {
   const today = new Date();
-  const currentMonth = today.getMonth();
-  const currentYear = today.getFullYear();
+  const currentMonth = refMonth != null ? refMonth : today.getMonth();
+  const currentYear = refYear != null ? refYear : today.getFullYear();
 
   const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
   const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear;
 
   const currentMonthTransactions = transactions.filter(t => {
+    if (t.isProjection) return false;
     const tDate = new Date(t.createdAt);
+    if (Number.isNaN(tDate.getTime())) return false;
     return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
   });
 
   const previousMonthTransactions = transactions.filter(t => {
+    if (t.isProjection) return false;
     const tDate = new Date(t.createdAt);
+    if (Number.isNaN(tDate.getTime())) return false;
     return tDate.getMonth() === previousMonth && tDate.getFullYear() === previousYear;
   });
 

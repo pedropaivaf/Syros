@@ -2,7 +2,7 @@
 
 Live status of the mobile + billing rollout. Update this file as things progress so any Claude session (on any machine) picks up where the last one stopped. Paired with [MOBILE_SETUP.md](../MOBILE_SETUP.md) (the full external-setup playbook) and the plan in [CLAUDE.md](../CLAUDE.md).
 
-Last updated: **2026-04-12**
+Last updated: **2026-07-21**
 
 ---
 
@@ -68,6 +68,46 @@ Para subir para **live mode** e começar a cobrar de verdade na web (movimento d
    ```
 
 5. **Smoke test com cartão real** (R$ 0,01 ou compra pequena) antes de divulgar — confirmar que `user_preferences` atualiza, UI reflete premium, e o cancelamento reverte para free.
+
+---
+
+## Última auditoria de código (2026-07-21)
+
+Correções aplicadas na sessão de auditoria completa do app:
+
+### Bugs críticos corrigidos
+- **calculateTotals**: income e paidExpense agora excluem projeções (`isProjection`). SummaryCards mostrava valores inflados.
+- **calculateExpensesByCategory**: exclui projeções — categorias mostravam valores irreais.
+- **calculateCardSummary**: exclui projeções — fatura do cartão inflava.
+- **compareCurrentVsPreviousMonth**: exclui projeções, aceita refMonth/refYear.
+- **TransactionForm**: data monthly agora respeita a data escolhida pelo usuário (antes usava `new Date()`).
+- **getUpcomingBills**: exclui income (não são bills), normaliza horas para não perder vencimentos do dia.
+
+### Feedback do cliente aplicado
+- **Ciclo removido**: botão "Ciclo" removido da FilterBar, opção removida do Settings. Tratado como fallback silencioso no código.
+- **Projeção invisível**: removido badge "Projeção" do UpcomingBillsSection, removida borda visual do CSS. Apenas opacity: 0.6 diferencia.
+- **Parcelas UX**: helper text agora diz "Informe quanto custa cada parcela" e mostra "Total: R$ X (Nx de R$ Y)".
+- **Troca de mês Overview**: corrigido — cycle tratado como month, overview muda corretamente.
+
+### Melhorias de consistência
+- **Boleto**: adicionado em PaymentTabs, TransactionList (paymentLabels), PaymentModal.
+- **Pluralização**: "transações encontradas" (era "transaçãoões").
+- **InsightsSection**: agora recebe envelopes com status calculado (antes recebia raw sem percent/status).
+- **EnvelopesSection**: `calculateEnvelopeStatus` aceita refMonth/refYear para flexibilidade.
+
+### Arquivos modificados
+```
+src/utils/calculations.js
+src/App.jsx
+src/components/TransactionForm.jsx
+src/components/FilterBar.jsx
+src/components/TransactionList.jsx
+src/components/PaymentTabs.jsx
+src/components/PaymentModal.jsx
+src/components/UpcomingBillsSection.jsx
+src/components/SettingsSection.jsx
+src/index.css
+```
 
 ---
 

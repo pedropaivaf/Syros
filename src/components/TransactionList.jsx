@@ -16,6 +16,7 @@ function TransactionList({ transactions, onTogglePaid, onEdit, onDelete, formatC
     debit: t('list.paymentMethods.debit'),
     credit: t('list.paymentMethods.credit'),
     cash: t('list.paymentMethods.cash'),
+    boleto: 'Boleto',
   };
 
   const groupedTransactions = useMemo(() => {

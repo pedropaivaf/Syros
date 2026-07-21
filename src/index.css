@@ -394,8 +394,7 @@ body {
 }
 
 .transaction-projection {
-  opacity: 0.8;
-  border-left: 3px solid var(--text-muted);
+  opacity: 0.6;
 }
 
 .payment-tab.active {

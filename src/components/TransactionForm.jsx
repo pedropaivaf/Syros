@@ -132,7 +132,7 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
         });
       }
     } else {
-      const transactionBaseDate = recurrence === 'single' ? selectedDate : new Date();
+      const transactionBaseDate = selectedDate;
       const signedAmount = type === 'expense' ? -Math.abs(numericAmount) : Math.abs(numericAmount);
 
       // For expenses: auto-paid for pix/debit/cash, not paid for credit
@@ -236,11 +236,11 @@ function TransactionForm({ onAddTransactions, customCategories = [], onAddCustom
             />
             {isInstallment && amount && installments && parseInt(installments, 10) >= 2 ? (
               <p id="amount-helper" className="mt-1 text-xs text-[#1B4965] dark:text-[#5FA8D3] font-medium">
-                Total: R$ {(parseFloat(amount) * parseInt(installments, 10)).toFixed(2).replace('.', ',')}
+                Total: R$ {(parseFloat(amount) * parseInt(installments, 10)).toFixed(2).replace('.', ',')} ({installments}x de R$ {parseFloat(amount).toFixed(2).replace('.', ',')})
               </p>
             ) : (
               <p id="amount-helper" className="mt-1 text-xs text-[#6B6B6B] dark:text-[#A09A92]">
-                {t('form.amount.helper')}
+                {isInstallment ? 'Informe quanto custa cada parcela' : t('form.amount.helper')}
               </p>
             )}
           </div>

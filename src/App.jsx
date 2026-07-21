@@ -66,7 +66,7 @@ import { setCurrentPlan, getCurrentPlan, isPremiumActive } from './config.js';
 import { initPurchases, getCustomerInfo, extractPremiumPayload } from './services/purchases.js';
 import { isReturningFromCheckout, clearCheckoutQueryParam } from './services/checkout.js';
 import { loadNotificationPrefs, runNotificationChecks } from './services/notificationService.js';
-import { calculateTotals } from './utils/calculations.js';
+import { calculateTotals, calculateEnvelopeStatus } from './utils/calculations.js';
 
 import { SyrosLogo } from './components/Header.jsx';
 
@@ -332,11 +332,8 @@ function AppContent() {
   );
 
   const summaryTransactions = useMemo(() => {
-    if (currentFilter === 'month') {
+    if (currentFilter === 'month' || currentFilter === 'cycle') {
       return filterByMonth(processedTransactions, selectedMonth.year, selectedMonth.month);
-    }
-    if (currentFilter === 'cycle') {
-      return filterByCycle(processedTransactions, billingCycleDay, selectedMonth.year, selectedMonth.month);
     }
     if (currentFilter === 'range' && dateRange.from && dateRange.to) {
       const fromTime = dateRange.from.getTime();
@@ -351,14 +348,11 @@ function AppContent() {
       });
     }
     return processedTransactions;
-  }, [processedTransactions, currentFilter, dateRange, billingCycleDay, selectedMonth]);
+  }, [processedTransactions, currentFilter, dateRange, selectedMonth]);
 
   const overviewTransactions = useMemo(() => {
-    if (overviewFilter === 'month') {
+    if (overviewFilter === 'month' || overviewFilter === 'cycle') {
       return filterByMonth(processedTransactions, selectedMonth.year, selectedMonth.month);
-    }
-    if (overviewFilter === 'cycle') {
-      return filterByCycle(processedTransactions, billingCycleDay, selectedMonth.year, selectedMonth.month);
     }
     if (overviewFilter === 'range' && overviewDateRange.from && overviewDateRange.to) {
       const fromTime = overviewDateRange.from.getTime();
@@ -373,12 +367,19 @@ function AppContent() {
       });
     }
     return processedTransactions;
-  }, [processedTransactions, overviewFilter, overviewDateRange, billingCycleDay, selectedMonth]);
+  }, [processedTransactions, overviewFilter, overviewDateRange, selectedMonth]);
 
   const overviewValues = useMemo(
     () => calculateTotals(overviewTransactions),
     [overviewTransactions],
   );
+
+  const envelopesWithStatus = useMemo(() => {
+    return envelopes.map(env => {
+      const status = calculateEnvelopeStatus(overviewTransactions, env);
+      return { ...env, ...status };
+    });
+  }, [envelopes, overviewTransactions]);
 
   const maxTransactionAmount = useMemo(() => {
     if (!summaryTransactions.length) return 1000;
@@ -785,7 +786,7 @@ function AppContent() {
             customCategories={customCategories}
           />
           <div className="lg:grid lg:grid-cols-2 lg:gap-6 space-y-5 lg:space-y-0">
-            <InsightsSection transactions={overviewTransactions} envelopes={envelopes} />
+            <InsightsSection transactions={overviewTransactions} envelopes={envelopesWithStatus} />
             <UpcomingBillsSection transactions={processedTransactions} />
           </div>
         </section>
@@ -983,7 +984,7 @@ function AppContent() {
             })()}
             {/* Result count */}
             <p className="text-xs text-[#9B9B9B] dark:text-[#6B6560]">
-              {listTransactions.length} transação{listTransactions.length !== 1 ? 'ões' : ''} encontrada{listTransactions.length !== 1 ? 's' : ''}
+              {listTransactions.length} {listTransactions.length === 1 ? 'transação encontrada' : 'transações encontradas'}
             </p>
             <TransactionList
               transactions={listTransactions}

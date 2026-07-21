@@ -90,7 +90,7 @@ The app has **two independent data pipelines** for calculations:
 | `overviewTransactions` / `overviewValues` | Controlled by `overviewFilter` (`'month'` / `'range'`) | Overview page: SummaryCards, MiniChart, CategoryBreakdown, RecentTransactions, Insights |
 | `summaryTransactions` / `summaryValues` | Controlled by `currentFilter` (`'month'` / `'range'`) | History/Transações page (FilterBar, TransactionList), Graphs & Goals page |
 
-Both pipelines default to current month via `filterByMonth(transactions, year, month, billingCycleDay)`. The FilterBar shows a scrollable month picker (iOS-style `MonthScrollPicker`) + DateRangePicker — the picker drives `overviewSelectedMonth` / `historySelectedMonth` state in App.jsx, each pipeline has its own.
+Both pipelines default to current month via `filterByMonth(transactions, year, month)`. The FilterBar shows a scrollable month picker (iOS-style `MonthScrollPicker`) + DateRangePicker. The `selectedMonth` state in App.jsx is shared between both pipelines.
 
 ### Calculation formulas (same for both pipelines)
 
